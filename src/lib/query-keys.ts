@@ -19,6 +19,7 @@ export const queryKeys = {
     all: ["drivers"] as const,
     list: (params: any) => ["drivers", "list", params] as const,
     detail: (id: string) => ["drivers", "detail", id] as const,
+    
   },
   users: {
     all: ["users"] as const,
