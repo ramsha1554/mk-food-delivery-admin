@@ -29,3 +29,27 @@ export interface DashboardStats {
     createdAt: string;
   }[];
 }
+
+export interface Order {
+  _id: string;
+  customer?: { _id: string; name: string; phone: string };
+  restaurant?: { _id: string; name: string };
+  driver?: { _id: string; name: string } | null;
+  items: { name: string; quantity: number; price: number }[];
+  total: number;
+  status: "placed" | "confirmed" | "preparing" | "ready" | "pickup" | "delivered" | "cancelled" | "rejected";
+  paymentMethod: "card" | "cod";
+  createdAt: string;
+}
+
+export interface PaginatedResponse<T> {
+  success: boolean;
+  message?: string;
+  data: T[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
