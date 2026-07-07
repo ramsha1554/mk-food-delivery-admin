@@ -53,6 +53,52 @@ export interface User {
   restaurant?: { _id: string; name: string } | null;
 }
 
+
+
+export interface Restaurant {
+  _id: string;
+  name: string;
+  owner ?:{
+
+
+
+  _id: string; name: string; phone: string } ;
+
+
+address?: {
+  street?: string;
+  city?: string;
+  postcode?: string;
+  country?: string;
+};
+  cuisineType: string;
+  status : "pending" | "approved" | "rejected";
+
+  isOpen : boolean;
+ 
+  updatedAt: string;
+  deliveryFee ?: number;
+  minimumOrderValue ?: number;
+
+
+   createdAt: string;
+}
+
+
+
+export interface Driver {
+  _id : string ;
+  name : string ;
+  phone : string ;
+  vehicleType : string ;
+  vehicleNumber : string ;
+  isActive : boolean ;
+  
+  createdAt : string ;
+  
+}
+  
+
 export interface PaginatedResponse<T> {
   success: boolean;
   message?: string;
