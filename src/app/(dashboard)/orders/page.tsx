@@ -35,7 +35,7 @@ export default function OrdersPage() {
   });
 
   const orders = apiResponse?.data ?? [];
-  const totalPages = apiResponse?.pagination?.totalPages ?? 1;
+ const totalPages = apiResponse?.pagination?.pages ?? 1;
 
   const columns: ColumnDef<Order>[] = useMemo(
     () => [

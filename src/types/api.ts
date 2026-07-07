@@ -87,15 +87,26 @@ address?: {
 
 
 export interface Driver {
-  _id : string ;
-  name : string ;
-  phone : string ;
-  vehicleType : string ;
-  vehicleNumber : string ;
-  isActive : boolean ;
-  
-  createdAt : string ;
-  
+  _id: string;
+  name: string;
+  phone: string;
+  email?: string | null;
+  role: string;
+  isVerified: boolean;
+  isActive: boolean;
+  driverStatus: "pending" | "approved" | "rejected";
+  isOnline: boolean;
+  vehicleType?: "bicycle" | "car" | "motorcycle" | "van";
+  createdAt: string;
+}
+
+export interface DriverDocument {
+  _id: string;
+  type: string;
+  fileUrl: string;
+  status: "pending" | "approved" | "rejected";
+  note?: string;
+  uploadedAt: string;
 }
   
 
@@ -104,9 +115,11 @@ export interface PaginatedResponse<T> {
   message?: string;
   data: T[];
   pagination?: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+};
 }
