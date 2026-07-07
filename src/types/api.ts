@@ -42,6 +42,17 @@ export interface Order {
   createdAt: string;
 }
 
+export interface User {
+  _id: string;
+  name: string;
+  phone: string;
+  email?: string;
+  role: "customer" | "driver" | "admin";
+  isActive: boolean;
+  createdAt: string;
+  restaurant?: { _id: string; name: string } | null;
+}
+
 export interface PaginatedResponse<T> {
   success: boolean;
   message?: string;

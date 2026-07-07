@@ -10,6 +10,9 @@ const api = axios.create({
   },
 });
 
+// 
+
+
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (typeof window !== "undefined") {
@@ -59,6 +62,7 @@ function forceLogout() {
     window.location.href = "/login";
   }
 }
+//
 
 api.interceptors.response.use(
   (response) => response,
@@ -97,7 +101,7 @@ api.interceptors.response.use(
       }
     }
 
-    const message = error.response?.data?.message || error.message || "An unexpected error occurred.";
+    const message = error.response?.data?.message || error.message || "An unexpected error occurred."; //fallback message if none is provided
     const method = error.config?.method?.toUpperCase() ?? "GET";
 
     if (method === "GET") {
