@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL + "/api/v1",
   headers: {
     "Content-Type": "application/json",
-    "ngrok-skip-browser-warning": "true",
+    // "ngrok-skip-browser-warning": "true",
   },
 });
 
@@ -55,14 +55,25 @@ async function refreshAccessToken(): Promise<string> {
   return newAccessToken;
 }
 
+// function forceLogout() {
+//   localStorage.removeItem("adminAccessToken");
+//   localStorage.removeItem("adminRefreshToken");
+//   if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+//     window.location.href = "/login";
+//   }
+// }
+//
+
 function forceLogout() {
   localStorage.removeItem("adminAccessToken");
   localStorage.removeItem("adminRefreshToken");
-  if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
-    window.location.href = "/login";
+  if (typeof window !== "undefined") {
+    document.cookie = "adminAccessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    if (!window.location.pathname.startsWith("/login")) {
+      window.location.href = "/login";
+    }
   }
 }
-//
 
 api.interceptors.response.use(
   (response) => response,

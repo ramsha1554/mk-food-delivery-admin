@@ -23,7 +23,6 @@ const statusVariant = (status: string) => {
       return "secondary";
   }
 };
-
 export default function DriverDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
