@@ -71,13 +71,26 @@ export default function RestaurantsPage() {
         // cell: ({ row }) => <span className="text-sm text-muted-foreground">{row.original.address ?? "—"}</span>,
 
        
-  accessorKey: "address",
-  header: "Address",
-  cell: ({ row }) => {
-    const addr = row.original.address;
-    const formatted = addr ? [addr.street, addr.city, addr.postcode].filter(Boolean).join(", ") : "—";
-    return <span className="text-sm text-muted-foreground">{formatted}</span>;
-  },
+  // accessorKey: "address",
+  // header: "Address",
+  // cell: ({ row }) => {
+  //   const addr = row.original.address;
+  //   const formatted = addr ? [addr.street, addr.city, addr.postcode].filter(Boolean).join(", ") : "—";
+  //   return <span className="text-sm text-muted-foreground">{formatted}</span>;
+  // },
+
+  
+  accessorKey: "name",
+  header: "Restaurant",
+  cell: ({ row }) => (
+    <div className="flex flex-col">
+      <span className="font-medium">{row.original.name}</span>
+      <span className="text-xs text-muted-foreground">
+        {row.original.cuisineType?.join(", ") ?? "—"}
+      </span>
+    </div>
+  ),
+
 
       },
       {

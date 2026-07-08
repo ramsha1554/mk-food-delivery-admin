@@ -46,43 +46,41 @@ export interface User {
   _id: string;
   name: string;
   phone: string;
-  email?: string;
+  email?: string | null;
   role: "customer" | "driver" | "admin";
+  isVerified: boolean;
   isActive: boolean;
+  driverStatus?: string | null;
+  isOnline?: boolean;
+  vehicleType?: string | null;
   createdAt: string;
-  restaurant?: { _id: string; name: string } | null;
 }
-
-
 
 export interface Restaurant {
   _id: string;
   name: string;
-  owner ?:{
-
-
-
-  _id: string; name: string; phone: string } ;
-
-
-address?: {
-  street?: string;
-  city?: string;
-  postcode?: string;
-  country?: string;
-};
-  cuisineType: string;
-  status : "pending" | "approved" | "rejected";
-
-  isOpen : boolean;
- 
-  updatedAt: string;
-  deliveryFee ?: number;
-  minimumOrderValue ?: number;
-
-
-   createdAt: string;
+  owner?: { _id: string; name: string; phone: string };
+  address?: {
+    street?: string;
+    city?: string;
+    postcode?: string;
+    country?: string;
+  };
+  cuisineType?: string[];
+  phone?: string;
+  email?: string;
+  minimumOrder?: number;
+  deliveryFee?: number;
+  commissionRate?: number;
+  preparationTime?: number;
+  status: "pending" | "approved" | "rejected";
+  isOpen?: boolean;
+  isBusy?: boolean;
+  averageRating?: number;
+  totalRatings?: number;
+  createdAt: string;
 }
+
 
 
 

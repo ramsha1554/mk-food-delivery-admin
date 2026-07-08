@@ -16,7 +16,13 @@ export default function UsersPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const users = useMemo(() => apiResponse?.data ?? [], [apiResponse]);
+  // const users = useMemo(() => apiResponse?.data ?? [], [apiResponse]);
+
+  const users = useMemo(
+  () => (apiResponse?.data ?? []).filter((u) => u.role === "customer"),
+  [apiResponse]
+);
+
 
   const columns: ColumnDef<User>[] = useMemo(
     () => [
