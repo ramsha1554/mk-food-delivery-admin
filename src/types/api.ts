@@ -122,6 +122,13 @@ export interface LedgerEntry {
   createdAt: string;
 }
 
+
+export interface PlatformConfig {
+  commissionRate?: number;
+  deliveryRadius?: number;
+  minimumOrderValue?: number;
+  currency?: string;
+}
 export interface PaginatedResponse<T> {
   success: boolean;
   message?: string;
