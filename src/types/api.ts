@@ -110,6 +110,18 @@ export interface DriverDocument {
 }
   
 
+
+export interface LedgerEntry {
+  _id: string;
+  restaurant?: { _id: string; name: string };
+  driver?: { _id: string; name: string };
+  order?: { _id: string };
+  amount: number;
+  type: "restaurant" | "driver";
+  isPaidOut: boolean;
+  createdAt: string;
+}
+
 export interface PaginatedResponse<T> {
   success: boolean;
   message?: string;
