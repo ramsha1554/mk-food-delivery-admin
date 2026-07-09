@@ -25,6 +25,18 @@ export function DocumentReviewCard({ document, driverId }: { document: DriverDoc
   const [showRejectForm, setShowRejectForm] = useState(false);
   const { mutate, isPending } = useReviewDocument();
 
+
+  const staticBase = process.env.NEXT_PUBLIC_STATIC_BASE_URL || "";
+const fallbackBase = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/api\/v1\/?$/, "");
+const baseUrl = staticBase || fallbackBase;
+
+const constructUrl = (path: string | undefined) => {
+  if (!path) return undefined;
+  if (path.startsWith("http")) return path;
+  const cleanPath = path.startsWith("/") ? path.substring(1) : path;
+  return `${baseUrl}/${cleanPath}`;
+};
+
   const handleApprove = () => {
     mutate({ docId: document._id, approved: true, driverId });
   };
@@ -50,8 +62,10 @@ export function DocumentReviewCard({ document, driverId }: { document: DriverDoc
       </CardHeader>
       <CardContent className="space-y-3">
         <a
-          href={document.fileUrl}
-          target="_blank"
+          // href={document.fileUrl}
+          // target="_blank"
+          href={constructUrl(document.fileUrl)}
+  target="_blank"
           rel="noopener noreferrer"
           className="block text-sm text-primary underline underline-offset-2"
         >

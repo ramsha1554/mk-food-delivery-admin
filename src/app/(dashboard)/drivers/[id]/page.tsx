@@ -1,62 +1,99 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Phone, Mail, Bike } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { ArrowLeft, Phone, Mail, Bike, User, Files, Shield, Calendar } from "lucide-react";
 import { useDrivers, useApproveDriver, useRejectDriver, useDriverDocuments } from "@/hooks/api/use-drivers";
+import { useUpdateUserStatus } from "@/hooks/api/use-users";
 import { DocumentReviewCard } from "@/components/drivers/document-review-card";
-import { useState, useMemo } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
-const statusVariant = (status: string) => {
+type TabType = "overview" | "documents";
+
+const statusStyles = (status: string) => {
   switch (status) {
     case "approved":
-      return "default";
+      return "bg-emerald-50 text-emerald-700 border-emerald-200";
+    case "pending":
+      return "bg-amber-50 text-amber-700 border-amber-200";
     case "rejected":
-      return "destructive";
+      return "bg-rose-50 text-rose-700 border-rose-200";
     default:
-      return "secondary";
+      return "bg-slate-50 text-slate-700 border-slate-200";
   }
 };
-export default function DriverDetailPage() {
+
+const InfoRow = ({
+  label,
+  value,
+  icon: Icon,
+}: {
+  label: string;
+  value: string | React.ReactNode;
+  icon?: any;
+}) => (
+  <div className="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
+    {Icon && (
+      <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+        <Icon className="w-5 h-5" />
+      </div>
+    )}
+    <div className="flex-1 min-w-0">
+      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">{label}</p>
+      <span className="text-sm font-bold text-slate-900">{value}</span>
+    </div>
+  </div>
+);
+
+export default function DriverDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<TabType>("overview");
 
-
-  const { data: listResponse, isLoading: isLoadingDriver } = useDrivers();
+  const { data: listResponse, isLoading: isLoadingDriver } = useDrivers({});
   const driver = useMemo(() => listResponse?.data?.find((d) => d._id === id), [listResponse, id]);
 
   const { data: docsResponse, isLoading: isLoadingDocs } = useDriverDocuments(id);
   const documents = docsResponse?.data ?? [];
 
+  const approveMutation = useApproveDriver();
+  const rejectMutation = useRejectDriver();
+  const statusMutation = useUpdateUserStatus();
+
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [rejectNote, setRejectNote] = useState("");
 
-  const approveMutation = useApproveDriver();
-  const rejectMutation = useRejectDriver();
-
-  const handleApprove = () => {
-    approveMutation.mutate(id);
-  };
+  const handleApprove = () => approveMutation.mutate(id);
 
   const handleReject = () => {
     if (!rejectNote.trim()) return;
-    rejectMutation.mutate(
-      { id, note: rejectNote },
-      { onSuccess: () => setRejectDialogOpen(false) }
-    );
+    rejectMutation.mutate({ id, note: rejectNote }, { onSuccess: () => setRejectDialogOpen(false) });
+  };
+
+  const handleToggleSuspend = () => {
+    if (!driver) return;
+    statusMutation.mutate({ id, isActive: !driver.isActive });
   };
 
   if (isLoadingDriver) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-8 w-40" />
-        <Skeleton className="h-32 w-full" />
+        <Skeleton className="h-40 w-full" />
       </div>
     );
   }
@@ -72,6 +109,11 @@ export default function DriverDetailPage() {
     );
   }
 
+  const TABS: { key: TabType; label: string; icon: any }[] = [
+    { key: "overview", label: "Overview", icon: User },
+    { key: "documents", label: "Identity & Docs", icon: Files },
+  ];
+
   return (
     <div className="space-y-6">
       <Button variant="ghost" size="sm" className="gap-2 -ml-2" onClick={() => router.push("/drivers")}>
@@ -79,62 +121,143 @@ export default function DriverDetailPage() {
         Back to Drivers
       </Button>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle className="text-2xl">{driver.name}</CardTitle>
-            <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <Phone className="w-3.5 h-3.5" />
-                {driver.phone}
-              </span>
-              {driver.email && (
+      {/* Header */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xl font-bold">
+              {driver.name?.charAt(0) ?? "?"}
+            </div>
+            <div>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold tracking-tight">{driver.name}</h1>
+                <Badge
+                  variant="outline"
+                  className={cn("font-bold uppercase tracking-wider text-[10px]", statusStyles(driver.driverStatus))}
+                >
+                  {driver.driverStatus}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-4 mt-1.5 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5" />
-                  {driver.email}
+                  <Phone className="w-3.5 h-3.5" />
+                  {driver.phone}
                 </span>
-              )}
-              <span className="flex items-center gap-1.5 capitalize">
-                <Bike className="w-3.5 h-3.5" />
-                {driver.vehicleType ?? "—"}
-              </span>
+                {driver.email && (
+                  <span className="flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5" />
+                    {driver.email}
+                  </span>
+                )}
+                <span className="flex items-center gap-1.5 capitalize">
+                  <Bike className="w-3.5 h-3.5" />
+                  {driver.vehicleType ?? "—"}
+                </span>
+              </div>
             </div>
           </div>
-          <Badge variant={statusVariant(driver.driverStatus) as any} className="capitalize text-sm px-3 py-1">
-            {driver.driverStatus}
-          </Badge>
-        </CardHeader>
-        {driver.driverStatus === "pending" && (
-          <CardContent className="flex gap-2 pt-0">
-            <Button onClick={handleApprove} disabled={approveMutation.isPending}>
-              Approve Driver
-            </Button>
-            <Button variant="destructive" onClick={() => setRejectDialogOpen(true)}>
-              Reject Driver
-            </Button>
-          </CardContent>
-        )}
-      </Card>
 
-      <div>
-        <h2 className="text-lg font-semibold mb-3">Verification Documents</h2>
-        {isLoadingDocs ? (
-          <div className="grid gap-4 md:grid-cols-2">
-            {[1, 2].map((i) => (
-              <Skeleton key={i} className="h-40 w-full" />
-            ))}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 text-sm">
+              <span className={driver.isActive ? "text-emerald-600 font-medium" : "text-rose-600 font-medium"}>
+                {driver.isActive ? "Active" : "Suspended"}
+              </span>
+              <Switch checked={driver.isActive} onCheckedChange={handleToggleSuspend} disabled={statusMutation.isPending} />
+            </div>
+            {driver.driverStatus === "pending" && (
+              <>
+                <Button onClick={handleApprove} disabled={approveMutation.isPending}>
+                  Approve Application
+                </Button>
+                <Button variant="destructive" onClick={() => setRejectDialogOpen(true)}>
+                  Reject
+                </Button>
+              </>
+            )}
           </div>
-        ) : documents.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No documents uploaded yet.</p>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2">
-            {documents.map((doc) => (
-              <DocumentReviewCard key={doc._id} document={doc} driver={driver} />
-            
-            ))}
-          </div>
-        )}
+        </div>
       </div>
+
+      {/* Tabs */}
+      <div className="flex gap-1 border-b">
+        {TABS.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={cn(
+              "flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
+              activeTab === tab.key
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <tab.icon className="w-4 h-4" />
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {activeTab === "overview" && (
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm">
+            <div className="px-4 pt-4 pb-1">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Personal Details</h3>
+            </div>
+            <InfoRow label="Full Name" value={driver.name} icon={User} />
+            <InfoRow label="Phone Number" value={driver.phone} icon={Phone} />
+            <InfoRow label="Email Address" value={driver.email ?? "Not provided"} icon={Mail} />
+            <InfoRow label="Vehicle Type" value={<span className="capitalize">{driver.vehicleType ?? "—"}</span>} icon={Bike} />
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm">
+            <div className="px-4 pt-4 pb-1">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">System Status</h3>
+            </div>
+            <InfoRow
+              label="Verification"
+              value={
+                <Badge variant="outline" className={cn("font-bold uppercase text-[10px]", statusStyles(driver.driverStatus))}>
+                  {driver.driverStatus}
+                </Badge>
+              }
+              icon={Shield}
+            />
+            <InfoRow
+              label="Online Status"
+              value={driver.isOnline ? "Online now" : "Offline"}
+              icon={Bike}
+            />
+            <InfoRow
+              label="Joined"
+              value={new Date(driver.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+              icon={Calendar}
+            />
+          </div>
+        </div>
+      )}
+
+      {activeTab === "documents" && (
+        <div>
+          {isLoadingDocs ? (
+            <div className="grid gap-4 md:grid-cols-2">
+              {[1, 2].map((i) => (
+                <Skeleton key={i} className="h-40 w-full" />
+              ))}
+            </div>
+          ) : documents.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200">
+              <Files className="w-8 h-8 text-slate-300 mb-3" />
+              <p className="text-sm text-muted-foreground">No documents uploaded yet.</p>
+            </div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2">
+              {documents.map((doc) => (
+                <DocumentReviewCard key={doc._id} document={doc} driverId={id} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
         <DialogContent>
