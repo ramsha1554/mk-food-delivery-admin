@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import * as React from "react";
 import {
@@ -64,15 +64,18 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
+          
+
+<SidebarMenu className="gap-3">
+  {menuItems.map((item) => (
+
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={pathname === item.url} tooltip={item.title}>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
+               <SidebarMenuButton asChild isActive={pathname === item.url} tooltip={item.title}>
+  <Link href={item.url}>
+    <item.icon className="!w-[18px] !h-[18px]" />
+    <span>{item.title}</span>
+  </Link>
+</SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
