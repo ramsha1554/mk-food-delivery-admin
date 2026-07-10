@@ -37,7 +37,7 @@ export interface Order {
   driver?: { _id: string; name: string } | null;
   items: { name: string; quantity: number; price: number }[];
   total: number;
-  status: "placed" | "confirmed" | "preparing" | "ready" | "pickup" | "delivered" | "cancelled" | "rejected";
+status: "placed" | "confirmed" | "preparing" | "ready" | "picked_up" | "delivered" | "cancelled" | "rejected";
   paymentMethod: "card" | "cod";
   createdAt: string;
 }
