@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useDynamicBreadcrumb } from "@/components/shared/breadcrumb-context";
 
 type TabType = "overview" | "documents";
 
@@ -48,7 +49,7 @@ const InfoRow = ({
 }) => (
   <div className="flex items-start gap-4 p-4 rounded-xl hover:bg-muted transition-colors">
     {Icon && (
-      <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-muted-foreground shrink-0">
+      <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground shrink-0">
         <Icon className="w-5 h-5" />
       </div>
     )}
@@ -66,6 +67,8 @@ export default function DriverDetailsPage() {
 
   const { data: listResponse, isLoading: isLoadingDriver } = useDrivers({});
   const driver = useMemo(() => listResponse?.data?.find((d) => d._id === id), [listResponse, id]);
+
+  useDynamicBreadcrumb(driver?.name);
 
   const { data: docsResponse, isLoading: isLoadingDocs } = useDriverDocuments(id);
   const documents = docsResponse?.data ?? [];
@@ -121,8 +124,7 @@ export default function DriverDetailsPage() {
         Back to Drivers
       </Button>
 
-      {/* Header */}
-      <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
+      <div className="bg-card rounded-2xl border border-border shadow-sm p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xl font-bold">
@@ -178,7 +180,6 @@ export default function DriverDetailsPage() {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-1 border-b">
         {TABS.map((tab) => (
           <button
@@ -199,7 +200,7 @@ export default function DriverDetailsPage() {
 
       {activeTab === "overview" && (
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="bg-white rounded-2xl border border-border shadow-sm">
+          <div className="bg-card rounded-2xl border border-border shadow-sm">
             <div className="px-4 pt-4 pb-1">
               <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Personal Details</h3>
             </div>
@@ -209,7 +210,7 @@ export default function DriverDetailsPage() {
             <InfoRow label="Vehicle Type" value={<span className="capitalize">{driver.vehicleType ?? "—"}</span>} icon={Bike} />
           </div>
 
-          <div className="bg-white rounded-2xl border border-border shadow-sm">
+          <div className="bg-card rounded-2xl border border-border shadow-sm">
             <div className="px-4 pt-4 pb-1">
               <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">System Status</h3>
             </div>
@@ -222,11 +223,7 @@ export default function DriverDetailsPage() {
               }
               icon={Shield}
             />
-            <InfoRow
-              label="Online Status"
-              value={driver.isOnline ? "Online now" : "Offline"}
-              icon={Bike}
-            />
+            <InfoRow label="Online Status" value={driver.isOnline ? "Online now" : "Offline"} icon={Bike} />
             <InfoRow
               label="Joined"
               value={new Date(driver.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
@@ -246,7 +243,7 @@ export default function DriverDetailsPage() {
             </div>
           ) : documents.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 bg-muted/30 rounded-2xl border-2 border-dashed border-border">
-              <Files className="w-8 h-8 text-slate-300 mb-3" />
+              <Files className="w-8 h-8 text-muted-foreground mb-3" />
               <p className="text-sm text-muted-foreground">No documents uploaded yet.</p>
             </div>
           ) : (
