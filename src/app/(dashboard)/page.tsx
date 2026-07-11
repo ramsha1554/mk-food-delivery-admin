@@ -1,7 +1,21 @@
+
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Bike, Navigation, Store, Package, ClipboardList, Activity } from "lucide-react";
+import Link from "next/link";
+import {
+  Users,
+  Bike,
+  Navigation,
+  Store,
+  Package,
+  ClipboardList,
+  Activity,
+  ArrowUpRight,
+  ShoppingBag,
+  UserCog,
+  Wallet,
+  ClipboardCheck,
+} from "lucide-react";
 import { useDashboardStats } from "@/hooks/api/use-stats";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -13,10 +27,14 @@ export default function DashboardPage() {
     return (
       <div className="flex flex-col gap-6">
         <Skeleton className="h-10 w-64" />
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <Skeleton key={i} className="h-28 w-full" />
+            <Skeleton key={i} className="h-24 w-full" />
           ))}
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-64 w-full" />
         </div>
       </div>
     );
@@ -25,8 +43,8 @@ export default function DashboardPage() {
   if (isError || !stats) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
-        <Activity className="w-12 h-12 text-destructive opacity-50" />
-        <h2 className="text-xl font-semibold">Failed to load dashboard data</h2>
+        <Activity className="w-12 h-12 text-slate-300" />
+        <h2 className="text-xl font-semibold text-foreground">Failed to load dashboard data</h2>
         <p className="text-muted-foreground text-center max-w-md">
           Please check your connection or try again later.
         </p>
@@ -34,49 +52,114 @@ export default function DashboardPage() {
     );
   }
 
-  const metricCards = [
-    { title: "Total Customers", value: stats.totalCustomers, icon: Users, color: "text-blue-600" },
-    { title: "Total Drivers", value: stats.totalDrivers, icon: Bike, color: "text-green-600" },
-    { title: "Active Drivers", value: stats.activeDrivers, icon: Navigation, color: "text-emerald-600" },
-    { title: "Total Restaurants", value: stats.totalRestaurants, icon: Store, color: "text-purple-600" },
-    { title: "Active Orders", value: stats.activeOrders, icon: Package, color: "text-orange-600" },
-    { title: "Total Orders", value: stats.totalOrders, icon: ClipboardList, color: "text-slate-600" },
+  const kpis = [
+    { label: "Customers", value: stats.totalCustomers, icon: Users },
+    { label: "Total Drivers", value: stats.totalDrivers, icon: Bike },
+    { label: "Active Drivers", value: stats.activeDrivers, icon: Navigation },
+    { label: "Restaurants", value: stats.totalRestaurants, icon: Store },
+    { label: "Active Orders", value: stats.activeOrders, icon: Package },
+    { label: "Total Orders", value: stats.totalOrders, icon: ClipboardList },
   ];
+
+  const pendingItems = [
+    stats.pendingDriverApprovals > 0
+      ? { label: "Driver application", count: stats.pendingDriverApprovals, href: "/drivers?status=pending" }
+      : null,
+    stats.pendingRestaurantApprovals > 0
+      ? { label: "Restaurant application", count: stats.pendingRestaurantApprovals, href: "/restaurants?status=pending" }
+      : null,
+  ].filter((item): item is { label: string; count: number; href: string } => item !== null);
+
+  // const quickLinks = [
+  //   { label: "Orders", href: "/orders", icon: ShoppingBag, hint: `${stats.activeOrders} active` },
+  //   { label: "Drivers", href: "/drivers", icon: Bike, hint: `${stats.activeDrivers} online` },
+  //   { label: "Restaurants", href: "/restaurants", icon: Store, hint: `${stats.totalRestaurants} total` },
+  //   { label: "Users", href: "/users", icon: UserCog, hint: `${stats.totalCustomers} accounts` },
+  //   { label: "Virtual Ledger", href: "/ledger", icon: Wallet, hint: "Settlements" },
+  // ];
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
-        {(stats.pendingDriverApprovals > 0 || stats.pendingRestaurantApprovals > 0) && (
-          <div className="flex gap-2 text-xs text-muted-foreground">
-            {stats.pendingDriverApprovals > 0 && (
-              <span className="px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-                {stats.pendingDriverApprovals} driver approval{stats.pendingDriverApprovals > 1 ? "s" : ""} pending
-              </span>
-            )}
-            {stats.pendingRestaurantApprovals > 0 && (
-              <span className="px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-                {stats.pendingRestaurantApprovals} restaurant approval{stats.pendingRestaurantApprovals > 1 ? "s" : ""} pending
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard Overview</h1>
+        <p className="text-muted-foreground mt-1">Platform activity at a glance</p>
+      </div>
+
+      
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+        {kpis.map((kpi) => (
+          <div key={kpi.label} className="bg-card border border-border rounded-2xl shadow-sm p-4">
+            <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground mb-3">
+              <kpi.icon className="w-4 h-4" />
+            </div>
+            <p className="text-2xl font-semibold tabular-nums text-foreground">{kpi.value.toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{kpi.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Two-panel body */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {/* Pending Approvals */}
+        <div className="bg-card border border-border rounded-2xl shadow-sm">
+          <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <ClipboardCheck className="w-4 h-4 text-amber-500" />
+              Pending Approvals
+            </h3>
+            {pendingItems.length > 0 && (
+              <span className="text-xs font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">
+                {pendingItems.reduce((sum, i) => sum + i.count, 0)} total
               </span>
             )}
           </div>
-        )}
-      </div>
+          {pendingItems.length === 0 ? (
+            <div className="px-5 py-10 text-center text-sm text-muted-foreground">
+              Nothing pending — you're all caught up.
+            </div>
+          ) : (
+            <div className="divide-y divide-border">
+              {pendingItems.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="flex items-center justify-between px-5 py-3.5 text-sm hover:bg-muted transition-colors"
+                >
+                  <span className="text-foreground">
+                    <span className="font-semibold text-foreground">{item.count}</span> {item.label}
+                    {item.count > 1 ? "s" : ""} awaiting review
+                  </span>
+                  <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {metricCards.map((metric) => (
-          <Card key={metric.title} className="hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{metric.title}</CardTitle>
-              <div className={`p-2 rounded-lg bg-slate-100 ${metric.color}`}>
-                <metric.icon className="w-4 h-4" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{metric.value.toLocaleString()}</div>
-            </CardContent>
-          </Card>
-        ))}
+        {/* Quick Navigation */}
+        {/* <div className="bg-card border border-border rounded-2xl shadow-sm">
+          <div className="px-5 py-4 border-b border-border">
+            <h3 className="text-sm font-semibold text-foreground">Quick Navigation</h3>
+          </div>
+          <div className="divide-y divide-border">
+            {quickLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="flex items-center justify-between px-5 py-3.5 text-sm hover:bg-muted transition-colors"
+              >
+                <span className="flex items-center gap-3 text-foreground">
+                  <link.icon className="w-4 h-4 text-muted-foreground" />
+                  {link.label}
+                </span>
+                <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                  {link.hint}
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div> */}
       </div>
     </div>
   );
