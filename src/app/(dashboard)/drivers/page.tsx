@@ -45,7 +45,7 @@ const statusStyles = (status: string) => {
     case "rejected":
       return "bg-rose-50 text-rose-700 border-rose-200";
     default:
-      return "bg-slate-50 text-slate-700 border-slate-200";
+      return "bg-muted text-foreground border-border";
   }
 };
 
@@ -159,7 +159,7 @@ export default function DriversPage() {
       accessorKey: "isOnline",
       header: "Online",
       cell: ({ row }) => (
-        <span className={cn("flex items-center gap-1.5 text-xs", row.original.isOnline ? "text-emerald-600" : "text-slate-400")}>
+        <span className={cn("flex items-center gap-1.5 text-xs", row.original.isOnline ? "text-emerald-600" : "text-muted-foreground")}>
           <span className={cn("w-1.5 h-1.5 rounded-full", row.original.isOnline ? "bg-emerald-500" : "bg-slate-300")} />
           {row.original.isOnline ? "Online" : "Offline"}
         </span>
@@ -169,7 +169,7 @@ export default function DriversPage() {
       accessorKey: "createdAt",
       header: "Join Date",
       cell: ({ row }) => (
-        <span className="text-sm text-slate-600">
+        <span className="text-sm text-muted-foreground">
           {new Date(row.original.createdAt).toLocaleDateString(undefined, {
             year: "numeric",
             month: "long",
@@ -209,24 +209,24 @@ export default function DriversPage() {
           <h1 className="text-3xl font-bold tracking-tight">Driver Management</h1>
           <p className="text-muted-foreground">Manage and verify your fleet drivers</p>
         </div>
-        <Badge variant="outline" className="px-3 py-1 bg-white text-slate-700 border-slate-200">
+        <Badge variant="outline" className="px-3 py-1 bg-white text-foreground border-border">
           Total Drivers: {drivers.length}
         </Badge>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+      <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-xl border border-border shadow-sm">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search by name, phone or vehicle..."
-            className="pl-9 bg-slate-50/50 border-slate-100"
+            className="pl-9 bg-muted/30 border-border"
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
           />
         </div>
         <div className="flex flex-wrap gap-2">
           <select
-            className="h-10 px-3 py-2 rounded-md border border-slate-100 bg-slate-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200 transition-all"
+            className="h-10 px-3 py-2 rounded-md border border-border bg-muted/30 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200 transition-all"
             value={driverStatus}
             onChange={(e) => handleStatusChange(e.target.value)}
           >
@@ -237,7 +237,7 @@ export default function DriversPage() {
           </select>
 
           <select
-            className="h-10 px-3 py-2 rounded-md border border-slate-100 bg-slate-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200 transition-all"
+            className="h-10 px-3 py-2 rounded-md border border-border bg-muted/30 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200 transition-all"
             value={isActive === undefined ? "" : isActive.toString()}
             onChange={(e) => handleActiveChange(e.target.value)}
           >
@@ -247,7 +247,7 @@ export default function DriversPage() {
           </select>
 
           <select
-            className="h-10 px-3 py-2 rounded-md border border-slate-100 bg-slate-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200 transition-all"
+            className="h-10 px-3 py-2 rounded-md border border-border bg-muted/30 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200 transition-all"
             value={isOnline === undefined ? "" : isOnline.toString()}
             onChange={(e) => handleOnlineChange(e.target.value)}
           >
@@ -257,7 +257,7 @@ export default function DriversPage() {
           </select>
 
           {isFilterActive && (
-            <Button variant="ghost" size="sm" className="h-10 text-slate-500 hover:text-slate-700" onClick={handleClear}>
+            <Button variant="ghost" size="sm" className="h-10 text-muted-foreground hover:text-foreground" onClick={handleClear}>
               <XCircle className="w-4 h-4 mr-2" />
               Clear
             </Button>
@@ -266,12 +266,12 @@ export default function DriversPage() {
       </div>
 
       {!isFilterActive ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200">
-          <div className="p-4 rounded-full bg-slate-100 mb-4 text-slate-400">
+        <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-2xl border-2 border-dashed border-border">
+          <div className="p-4 rounded-full bg-slate-100 mb-4 text-muted-foreground">
             <Filter className="w-8 h-8" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-700">No Filters Selected</h3>
-          <p className="text-slate-500 text-center max-w-sm mt-1">
+          <h3 className="text-lg font-semibold text-foreground">No Filters Selected</h3>
+          <p className="text-muted-foreground text-center max-w-sm mt-1">
             Please enter a search term or select a filter above to load driver data.
           </p>
         </div>

@@ -53,7 +53,7 @@ const constructUrl = (path: string | undefined) => {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
-          <FileText className="w-4 h-4 text-slate-400" />
+          <FileText className="w-4 h-4 text-muted-foreground" />
           {document.type}
         </CardTitle>
         <Badge variant={statusVariant(document.status) as any} className="capitalize">

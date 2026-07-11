@@ -33,7 +33,7 @@ const statusStyles = (status: string) => {
     case "rejected":
       return "bg-rose-50 text-rose-700 border-rose-200";
     default:
-      return "bg-slate-50 text-slate-700 border-slate-200";
+      return "bg-muted text-foreground border-border";
   }
 };
 
@@ -46,15 +46,15 @@ const InfoRow = ({
   value: string | React.ReactNode;
   icon?: any;
 }) => (
-  <div className="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
+  <div className="flex items-start gap-4 p-4 rounded-xl hover:bg-muted transition-colors">
     {Icon && (
-      <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+      <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-muted-foreground shrink-0">
         <Icon className="w-5 h-5" />
       </div>
     )}
     <div className="flex-1 min-w-0">
-      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">{label}</p>
-      <span className="text-sm font-bold text-slate-900">{value}</span>
+      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">{label}</p>
+      <span className="text-sm font-bold text-foreground">{value}</span>
     </div>
   </div>
 );
@@ -122,7 +122,7 @@ export default function DriverDetailsPage() {
       </Button>
 
       {/* Header */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+      <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xl font-bold">
@@ -199,9 +199,9 @@ export default function DriverDetailsPage() {
 
       {activeTab === "overview" && (
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div className="bg-white rounded-2xl border border-border shadow-sm">
             <div className="px-4 pt-4 pb-1">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Personal Details</h3>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Personal Details</h3>
             </div>
             <InfoRow label="Full Name" value={driver.name} icon={User} />
             <InfoRow label="Phone Number" value={driver.phone} icon={Phone} />
@@ -209,9 +209,9 @@ export default function DriverDetailsPage() {
             <InfoRow label="Vehicle Type" value={<span className="capitalize">{driver.vehicleType ?? "—"}</span>} icon={Bike} />
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div className="bg-white rounded-2xl border border-border shadow-sm">
             <div className="px-4 pt-4 pb-1">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">System Status</h3>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">System Status</h3>
             </div>
             <InfoRow
               label="Verification"
@@ -245,7 +245,7 @@ export default function DriverDetailsPage() {
               ))}
             </div>
           ) : documents.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200">
+            <div className="flex flex-col items-center justify-center py-16 bg-muted/30 rounded-2xl border-2 border-dashed border-border">
               <Files className="w-8 h-8 text-slate-300 mb-3" />
               <p className="text-sm text-muted-foreground">No documents uploaded yet.</p>
             </div>
