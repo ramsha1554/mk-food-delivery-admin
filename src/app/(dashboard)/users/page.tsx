@@ -47,7 +47,7 @@ export default function UsersPage() {
         cell: ({ row }) => (
           <div className="flex flex-col text-sm">
             <div className="flex items-center gap-1.5">
-              <Phone className="w-3 h-3 text-slate-400" />
+              <Phone className="w-3 h-3 text-muted-foreground" />
               {row.original.phone}
             </div>
             {row.original.email && <span className="text-xs text-muted-foreground">{row.original.email}</span>}
@@ -67,7 +67,7 @@ export default function UsersPage() {
         accessorKey: "createdAt",
         header: "Join Date",
         cell: ({ row }) => (
-          <span className="text-sm text-slate-600">
+          <span className="text-sm text-muted-foreground">
             {new Date(row.original.createdAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })}
           </span>
         ),
@@ -125,3 +125,4 @@ export default function UsersPage() {
     </div>
   );
 }
+
