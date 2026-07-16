@@ -11,9 +11,6 @@ import {
   ClipboardList,
   Activity,
   ArrowUpRight,
-  ShoppingBag,
-  UserCog,
-  Wallet,
   ClipboardCheck,
 } from "lucide-react";
 import { useDashboardStats } from "@/hooks/api/use-stats";
@@ -70,14 +67,7 @@ export default function DashboardPage() {
       : null,
   ].filter((item): item is { label: string; count: number; href: string } => item !== null);
 
-  // const quickLinks = [
-  //   { label: "Orders", href: "/orders", icon: ShoppingBag, hint: `${stats.activeOrders} active` },
-  //   { label: "Drivers", href: "/drivers", icon: Bike, hint: `${stats.activeDrivers} online` },
-  //   { label: "Restaurants", href: "/restaurants", icon: Store, hint: `${stats.totalRestaurants} total` },
-  //   { label: "Users", href: "/users", icon: UserCog, hint: `${stats.totalCustomers} accounts` },
-  //   { label: "Virtual Ledger", href: "/ledger", icon: Wallet, hint: "Settlements" },
-  // ];
-
+  
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -136,30 +126,6 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Quick Navigation */}
-        {/* <div className="bg-card border border-border rounded-2xl shadow-sm">
-          <div className="px-5 py-4 border-b border-border">
-            <h3 className="text-sm font-semibold text-foreground">Quick Navigation</h3>
-          </div>
-          <div className="divide-y divide-border">
-            {quickLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="flex items-center justify-between px-5 py-3.5 text-sm hover:bg-muted transition-colors"
-              >
-                <span className="flex items-center gap-3 text-foreground">
-                  <link.icon className="w-4 h-4 text-muted-foreground" />
-                  {link.label}
-                </span>
-                <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                  {link.hint}
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div> */}
       </div>
     </div>
   );
