@@ -14,7 +14,8 @@ import { useOrders } from "@/hooks/api/use-orders";
 import { useDashboardStats } from "@/hooks/api/use-stats";
 import { Order } from "@/types/api";
 import { cn } from "@/lib/utils";
-
+import Link from "next/link";
+import { Eye } from "lucide-react";
 const SESSION_KEY = "orders_table_state";
 
 interface TableState {
@@ -167,7 +168,20 @@ export default function OrdersPage() {
       },
 
       
-
+{
+  id: "actions",
+  header: () => <div className="text-right">Actions</div>,
+  cell: ({ row }) => (
+    <div className="flex justify-end">
+      <Button asChild variant="ghost" size="sm" className="gap-1.5 text-xs">
+        <Link href={`/orders/${row.original._id}`}>
+          <Eye className="w-3.5 h-3.5" />
+          view
+        </Link>
+      </Button>
+    </div>
+  ),
+},
 
       
     ],

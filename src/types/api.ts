@@ -30,18 +30,47 @@ export interface DashboardStats {
   }[];
 }
 
+export interface OrderItem {
+  menuItem: string;
+  name: string;
+  price: number;
+  quantity: number;
+  itemTotal: number;
+}
+
+export interface OrderStatusHistoryEntry {
+  status: string;
+  timestamp: string;
+  note?: string;
+}
+
 export interface Order {
   _id: string;
+  orderNumber: string;
   customer?: { _id: string; name: string; phone: string };
   restaurant?: { _id: string; name: string };
   driver?: { _id: string; name: string } | null;
-  items: { name: string; quantity: number; price: number }[];
+  items: OrderItem[];
+  subtotal: number;
+  deliveryFee: number;
+  platformFee: number;
   total: number;
-status: "placed" | "confirmed" | "preparing" | "ready" | "picked_up" | "delivered" | "cancelled" | "rejected";
   paymentMethod: "card" | "cod";
+  paymentStatus: "paid" | "pending" | "failed" | "refunded";
+  status: "placed" | "confirmed" | "preparing" | "ready" | "picked_up" | "delivered" | "cancelled" | "rejected";
+  statusHistory: OrderStatusHistoryEntry[];
+  deliveryAddress?: {
+    label?: string;
+    fullAddress?: string;
+  };
+  estimatedDeliveryTime?: string | null;
+  actualDeliveryTime?: string | null;
+  specialInstructions?: string;
+  rejectionReason?: string | null;
+  cancellationReason?: string | null;
   createdAt: string;
+  updatedAt: string;
 }
-
 export interface User {
   _id: string;
   name: string;
