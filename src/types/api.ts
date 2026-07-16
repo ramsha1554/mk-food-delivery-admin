@@ -10,28 +10,23 @@ export interface ApiError {
     statusCode?: number;
 }
 
-
-// export interface DashboardStats {
-//   counters: {
-//     totalUsers: { value: number; change: string; trend: "up" | "down" };
-//     activeDrivers: { value: number; change: string; trend: "up" | "down" };
-//     activeOrders: { value: number; change: string; trend: "up" | "down" };
-//     totalRevenue: { value: number; change: string; trend: "up" | "down" };
-//     onlineDriversCount: number;
-//   };
-//   orderVolumeChart?: { _id: string; total: number }[];
-//   recentActivity?: {
-//     _id: string;
-//     customer?: { name: string };
-//     restaurant?: { name: string };
-//     total: number;
-//     status: string;
-//     createdAt: string;
-//   }[];
-// }
-
-
 export interface DashboardStats {
+  counters: {
+    totalUsers: { value: number; change: string; trend: "up" | "down" };
+    activeDrivers: { value: number; change: string; trend: "up" | "down" };
+    activeOrders: { value: number; change: string; trend: "up" | "down" };
+    totalRevenue: { value: number; change: string; trend: "up" | "down" };
+    onlineDriversCount: number;
+  };
+  orderVolumeChart?: { _id: string; total: number }[];
+  recentActivity?: {
+    _id: string;
+    customer?: { name: string };
+    restaurant?: { name: string };
+    total: number;
+    status: string;
+    createdAt: string;
+  }[];
   totalCustomers: number;
   totalDrivers: number;
   activeDrivers: number;
@@ -83,6 +78,7 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
 }
+
 export interface User {
   _id: string;
   name: string;
@@ -122,9 +118,6 @@ export interface Restaurant {
   createdAt: string;
 }
 
-
-
-
 export interface Driver {
   _id: string;
   name: string;
@@ -147,8 +140,6 @@ export interface DriverDocument {
   note?: string;
   uploadedAt: string;
 }
-  
-
 
 export interface LedgerEntry {
   _id: string;
@@ -161,23 +152,23 @@ export interface LedgerEntry {
   createdAt: string;
 }
 
-
 export interface PlatformConfig {
   commissionRate?: number;
   deliveryRadius?: number;
   minimumOrderValue?: number;
   currency?: string;
 }
+
 export interface PaginatedResponse<T> {
   success: boolean;
   message?: string;
   data: T[];
   pagination?: {
-  total: number;
-  page: number;
-  limit: number;
-  pages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-};
+    total: number;
+    page: number;
+    limit: number;
+    pages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
 }
