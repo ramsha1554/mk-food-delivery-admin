@@ -20,6 +20,16 @@ const statusVariant = (status: string) => {
   }
 };
 
+const documentTypeLabels: Record<string, string> = {
+  driving_licence: "Driving Licence",
+  insurance: "Insurance Certificate",
+  vehicle_details: "Vehicle Details",
+  profile_photo: "Profile Photo",
+};
+
+
+const formatDocType = (type: string) => documentTypeLabels[type] ?? type.replace(/_/g, " ");
+
 export function DocumentReviewCard({ document, driverId }: { document: DriverDocument; driverId: string }) {
   const [note, setNote] = useState("");
   const [showRejectForm, setShowRejectForm] = useState(false);
@@ -53,9 +63,9 @@ const constructUrl = (path: string | undefined) => {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
-          <FileText className="w-4 h-4 text-muted-foreground" />
-          {document.type}
-        </CardTitle>
+  <FileText className="w-4 h-4 text-muted-foreground" />
+  {formatDocType(document.type)}
+</CardTitle>
         <Badge variant={statusVariant(document.status) as any} className="capitalize">
           {document.status}
         </Badge>
