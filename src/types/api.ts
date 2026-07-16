@@ -28,6 +28,14 @@ export interface DashboardStats {
     status: string;
     createdAt: string;
   }[];
+  totalCustomers: number;
+  totalDrivers: number;
+  activeDrivers: number;
+  totalRestaurants: number;
+  activeOrders: number;
+  totalOrders: number;
+  pendingDriverApprovals: number;
+  pendingRestaurantApprovals: number;
 }
 
 export interface Order {

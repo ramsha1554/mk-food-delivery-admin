@@ -111,7 +111,7 @@ export default function UsersPage() {
         <p className="text-muted-foreground">Manage customer and driver accounts</p>
       </div>
 
-      <DataTable columns={columns} data={users} searchKey="name" loading={isLoading} />
+      <DataTable columns={columns} data={users} loading={isLoading} />
 
       {selectedUser && (
         <SuspendDialog
