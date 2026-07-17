@@ -9,3 +9,15 @@ export const useOrders = (params?: { status?: string; page?: number; limit?: num
     placeholderData: (previousData) => previousData,
   });
 };
+
+
+export const useOrder = (id: string) => {
+  return useQuery({
+    queryKey: queryKeys.orders.detail(id),
+    queryFn: () => ordersApi.getById(id),
+    enabled: !!id,
+  });
+}; // so that the query does not run if id is falsy or undefined
+
+
+

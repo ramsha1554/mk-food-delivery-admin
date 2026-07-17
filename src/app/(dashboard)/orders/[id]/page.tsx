@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ import {
   Clock,
   MessageSquare,
 } from "lucide-react";
-import { useOrders } from "@/hooks/api/use-orders";
+import { useOrder } from "@/hooks/api/use-orders";
 import { cn } from "@/lib/utils";
 import { useDynamicBreadcrumb } from "@/components/shared/breadcrumb-context";
 
@@ -39,9 +38,8 @@ export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
-  
-  const { data: listResponse, isLoading } = useOrders({ page: 1, limit: 100 });
-  const order = useMemo(() => listResponse?.data?.find((o) => o._id === id), [listResponse, id]);
+const { data: response, isLoading } = useOrder(id);
+const order = response?.data;
 
   useDynamicBreadcrumb(order?.orderNumber);
 
@@ -128,7 +126,7 @@ export default function OrderDetailPage() {
             </div>
           </div>
 
-          {/* Items nad count */}
+          {/* Items and their count */}
           <div className="bg-card rounded-2xl border border-border shadow-sm">
             <div className="px-4 pt-4 pb-2">
               <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Order Items</h3>
