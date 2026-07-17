@@ -58,9 +58,12 @@ export default function LedgerPage() {
 
   const isFilterActive = !!search.trim() || !!isPaidOut;
 
-  const { data: apiResponse, isLoading } = useLedger({
-    isPaidOut: isPaidOut === "" ? undefined : isPaidOut === "true",
-  });
+const { data: apiResponse, isLoading } = useLedger({
+  isPaidOut: isPaidOut === "" ? undefined : isPaidOut === "true",
+  page: pagination.pageIndex + 1,
+  limit: pagination.pageSize,
+});
+const totalPages = apiResponse?.pagination?.pages ?? 1;
 
   const entries = useMemo(() => {
     let data: LedgerEntry[] = apiResponse?.data ?? [];
@@ -207,7 +210,9 @@ export default function LedgerPage() {
           loading={isLoading}
           pagination={pagination}
           onPaginationChange={setPagination}
-          manualPagination={false}
+          manualPagination
+          pageCount={totalPages}
+        
         />
       )}
 

@@ -1,6 +1,4 @@
 
-
-
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
@@ -212,13 +210,6 @@ export default function OrdersPage() {
     </div>
   ))}
 </div>
-
-
-
-
-
-
-
 
 
       <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-xl border border-border shadow-sm">

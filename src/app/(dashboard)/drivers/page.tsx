@@ -100,10 +100,12 @@ export default function DriversPage() {
 
   const isFilterActive = !!search.trim() || !!driverStatus || isActive !== undefined || isOnline !== undefined;
 
-  // Only status is a real server-side param per our confirmed API; search/isActive/isOnline are filtered client-side below
-  const { data: apiResponse, isLoading } = useDrivers({
-    status: driverStatus || undefined,
-  });
+const { data: apiResponse, isLoading } = useDrivers({
+  status: driverStatus || undefined,
+  page: pagination.pageIndex + 1,
+  limit: pagination.pageSize,
+});
+const totalPages = apiResponse?.pagination?.pages ?? 1;
 
   const drivers = useMemo(() => {
     let data: Driver[] = apiResponse?.data ?? [];
@@ -282,7 +284,8 @@ export default function DriversPage() {
           loading={isLoading}
           pagination={pagination}
           onPaginationChange={setPagination}
-          manualPagination={false}
+         manualPagination
+pageCount={totalPages}
         />
       )}
     </div>

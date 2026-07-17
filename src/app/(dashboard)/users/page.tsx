@@ -61,10 +61,18 @@ function UsersPageContent() {
 
   const isFilterActive = !!search.trim() || !!isActive;
 
+  // const { data: apiResponse, isLoading } = useUsers({
+  //   role: "customer",
+  //   search: search.trim() || undefined,
+  // });
+
   const { data: apiResponse, isLoading } = useUsers({
-    role: "customer",
-    search: search.trim() || undefined,
-  });
+  role: "customer",
+  search: search.trim() || undefined,
+  page: pagination.pageIndex + 1,
+  limit: pagination.pageSize,
+});
+const totalPages = apiResponse?.pagination?.pages ?? 1;
 
   const users = useMemo(() => {
     let data: User[] = (apiResponse?.data ?? []).filter((u) => u.role === "customer");
@@ -218,7 +226,8 @@ function UsersPageContent() {
           loading={isLoading}
           pagination={pagination}
           onPaginationChange={setPagination}
-          manualPagination={false}
+     manualPagination
+pageCount={totalPages}
         />
       )}
 

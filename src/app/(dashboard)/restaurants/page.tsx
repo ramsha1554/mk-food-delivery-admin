@@ -74,7 +74,14 @@ export default function RestaurantsPage() {
   const { data: statsResponse } = useDashboardStats();
   const stats = statsResponse?.data;
 
-  const { data: apiResponse, isLoading } = useRestaurants({ status: status || undefined });
+  // const { data: apiResponse, isLoading } = useRestaurants({ status: status || undefined });
+
+  const { data: apiResponse, isLoading } = useRestaurants({
+  status: status || undefined,
+  page: pagination.pageIndex + 1,
+  limit: pagination.pageSize,
+});
+const totalPages = apiResponse?.pagination?.pages ?? 1;
 
   const restaurants = useMemo(() => {
     let data: Restaurant[] = apiResponse?.data ?? [];
@@ -257,7 +264,9 @@ export default function RestaurantsPage() {
           loading={isLoading}
           pagination={pagination}
           onPaginationChange={setPagination}
-          manualPagination={false}
+          // manualPagination={false}
+          manualPagination
+pageCount={totalPages}
         />
       )}
 
