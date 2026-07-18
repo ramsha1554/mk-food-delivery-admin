@@ -10,8 +10,6 @@ const api = axios.create({
   },
 });
 
-// 
-
 
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -55,14 +53,6 @@ async function refreshAccessToken(): Promise<string> {
   return newAccessToken;
 }
 
-// function forceLogout() {
-//   localStorage.removeItem("adminAccessToken");
-//   localStorage.removeItem("adminRefreshToken");
-//   if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
-//     window.location.href = "/login";
-//   }
-// }
-//
 
 function forceLogout() {
   localStorage.removeItem("adminAccessToken");

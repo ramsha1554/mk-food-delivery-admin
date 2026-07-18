@@ -72,8 +72,7 @@ const constructUrl = (path: string | undefined) => {
       </CardHeader>
       <CardContent className="space-y-3">
         <a
-          // href={document.fileUrl}
-          // target="_blank"
+        
           href={constructUrl(document.fileUrl)}
   target="_blank"
           rel="noopener noreferrer"
