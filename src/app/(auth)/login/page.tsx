@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,16 +12,24 @@ export default function LoginPage() {
   const [step, setStep] = useState(1);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   const { sendOtp, isSendingOtp, verifyOtp, isVerifyingOtp } = useAuth();
+const handleSendOtp = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    await sendOtp(phoneNumber);
+    setStep(2);
+    setResendCooldown(30);
+  } catch {}
+};
 
-  const handleSendOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await sendOtp(phoneNumber);
-      setStep(2);
-    } catch {}
-  };
+const handleResendOtp = async () => {
+  try {
+    await sendOtp(phoneNumber);
+    setResendCooldown(30);
+  } catch {}
+};
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +37,14 @@ export default function LoginPage() {
       await verifyOtp({ phone: phoneNumber, otp });
     } catch {}
   };
+
+useEffect(() => {
+  if (resendCooldown <= 0) return;
+  const timer = setInterval(() => {
+    setResendCooldown((prev) => (prev <= 1 ? 0 : prev - 1));
+  }, 1000);
+  return () => clearInterval(timer);
+}, [resendCooldown]);
 
   const isLoading = isSendingOtp || isVerifyingOtp;
 
@@ -77,10 +93,16 @@ export default function LoginPage() {
                 </div>
               </div>
               <div className="flex justify-center">
-                <Button type="button" variant="link" className="text-xs font-normal text-muted-foreground"
+                {/* <Button type="button" variant="link" className="text-xs font-normal text-muted-foreground"
                   onClick={() => sendOtp(phoneNumber)} disabled={isLoading}>
                   Didn&apos;t receive code? Resend
-                </Button>
+                </Button> */}
+
+<Button type="button" variant="link" className="text-xs font-normal text-muted-foreground"
+  onClick={handleResendOtp} disabled={isLoading || resendCooldown > 0}>
+  {resendCooldown > 0 ? `Resend in 0:${resendCooldown.toString().padStart(2, "0")}` : "Didn't receive code? Resend"}
+</Button>
+
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-2 mt-2">
