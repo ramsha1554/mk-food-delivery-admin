@@ -159,6 +159,13 @@ export interface PlatformConfig {
   currency?: string;
 }
 
+export interface AssignDriverResult {
+  _id: string;
+  orderNumber: string;
+  driver: string;
+  status: Order["status"];
+}
+
 export interface PaginatedResponse<T> {
   success: boolean;
   message?: string;

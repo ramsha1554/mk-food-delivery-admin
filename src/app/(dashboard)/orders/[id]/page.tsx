@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import { AssignDriverDialog } from "@/components/orders/assign-driver-dialog";
 
 import { useParams, useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +20,7 @@ import { useOrder } from "@/hooks/api/use-orders";
 import { cn } from "@/lib/utils";
 import { useDynamicBreadcrumb } from "@/components/shared/breadcrumb-context";
 
+
 const statusStyles = (status: string) => {
   switch (status) {
     case "delivered":
@@ -35,6 +38,11 @@ const statusStyles = (status: string) => {
 const formatStatus = (status: string) => status.replace(/_/g, " ");
 
 export default function OrderDetailPage() {
+
+
+
+  const [assignDriverOpen, setAssignDriverOpen] = useState(false);
+
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
@@ -45,6 +53,8 @@ const order = response?.data;
 
   if (isLoading) {
     return (
+
+   
       <div className="space-y-6">
         <Skeleton className="h-8 w-40" />
         <Skeleton className="h-48 w-full" />
@@ -54,6 +64,7 @@ const order = response?.data;
 
   if (!order) {
     return (
+      
       <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
         <p className="text-muted-foreground">Order not found.</p>
         <Button variant="outline" onClick={() => router.push("/orders")}>
@@ -115,15 +126,22 @@ const order = response?.data;
                 <p className="text-sm font-semibold">{order.restaurant?.name ?? "Unknown"}</p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-muted-foreground shrink-0">
-                <Bike className="w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Driver</p>
-                <p className="text-sm font-semibold">{order.driver?.name ?? "Not yet assigned"}</p>
-              </div>
-            </div>
+            <div className="flex items-start gap-3 justify-between">
+  <div className="flex items-start gap-3">
+    <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-muted-foreground shrink-0">
+      <Bike className="w-4 h-4" />
+    </div>
+    <div>
+      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Driver</p>
+      <p className="text-sm font-semibold">{order.driver?.name ?? "Not yet assigned"}</p>
+    </div>
+  </div>
+  {!order.driver && !["delivered", "cancelled", "rejected"].includes(order.status) && (
+    <Button variant="link" size="sm" className="h-auto p-0 text-xs" onClick={() => setAssignDriverOpen(true)}>
+      Assign Driver
+    </Button>
+  )}
+</div>
           </div>
 
           {/* Items and their count */}
@@ -244,6 +262,7 @@ const order = response?.data;
           )}
         </div>
       </div>
+      <AssignDriverDialog open={assignDriverOpen} onOpenChange={setAssignDriverOpen} orderId={order._id} />
     </div>
   );
 }
